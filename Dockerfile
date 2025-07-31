@@ -5,10 +5,10 @@ WORKDIR /build
 COPY ./OpenVSP_3.44.2.tar.gz /build/OpenVSP_3.44.2.tar.gz
 COPY ./v4.1.1.tar.gz /build/swig-4.1.1.tar.gz
 
-RUN dnf update -y  && \
-    dnf groupinstall -y "Development Tools"  && \
-    dnf install -y epel-release && dnf config-manager --set-enabled powertools && dnf update -y  && \
-    dnf install -y wget cmake gcc-c++ libxml2-devel openjpeg2-devel conda python3-devel glm-devel rpm-build glew-devel swig doxygen graphviz texlive-scheme-basic gcc-toolset-12
+RUN dnf update -y && \
+    dnf groupinstall -y "Development Tools" && \
+    dnf install -y epel-release && dnf config-manager --set-enabled powertools && dnf update -y && \
+    dnf install -y wget cmake gcc-c++ libxml2-devel openjpeg2-devel python3-devel glm-devel rpm-build glew-devel swig doxygen graphviz texlive-scheme-basic gcc-toolset-12
 
 RUN wget https://github.com/PhilipHazel/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz && \
     tar -xzf pcre2-10.42.tar.gz && \
@@ -39,11 +39,11 @@ RUN cd /build && tar --no-same-owner -xzf OpenVSP_3.44.2.tar.gz && \
 
 RUN cd /build/OpenVSP-OpenVSP_3.44.2/ &&  mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
+        -DVSP_CPACK_GEN=RPM \
 	    -DCMAKE_EXE_LINKER_FLAGS="-lstdc++fs" \
 	    -DCMAKE_SHARED_LINKER_FLAGS="-lstdc++fs" \
-	    -DVPS_LIBRARY_PATH=/build/OpenVSP-OpenVSP_3.44.2/buildlibs \
-        -DCMAKE_PREFIX_PATH="/build/OpenVSP-OpenVSP_3.44.2/buildlibs/ANGELSCRIPT-prefix;/build/OpenVSP-OpenVSP_3.44.2/buildlibs/CMinPack-prefix" \
-	    ../src && make -j$(nproc) package
+	    -DVSP_LIBRARY_PATH=/build/OpenVSP-OpenVSP_3.44.2/buildlibs \
+        ../src && make -j$(nproc) package
 
 
 FROM scratch AS output

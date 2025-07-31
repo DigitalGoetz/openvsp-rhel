@@ -24,4 +24,11 @@ The Build RPM script creates a docker image and all required items needed to bui
 bash scripts/build-rpm.sh
 ```
 
+## Installing the built RPM
+
+```bash
+# since this a self-generated RPM, it isn't signed, hence the --nogpgcheck flag is used
+sudo dnf install --nogpgcheck -y ./OpenVSP-3.44.2-Linux.rpm
+```
+
 
